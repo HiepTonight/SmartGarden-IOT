@@ -1,0 +1,16 @@
+.card-sensor-item {
+  margin-top: 16px; }
+
+.left {
+  background-color: #e4e4e4; }
+
+.right {
+  background-color: #b3b2b2; }
+
+.top {
+  display: flex;
+  justify-content: space-around; }
+
+.bottom {
+  display: flex;
+  justify-content: space-around; }

@@ -1,0 +1,20 @@
+<div class="mt-4">
+    <h3>Cập nhật thông tin {{sensor.name}}</h3>
+
+    <form method="POST" action="/area/{{sensor._id}}?_method=PUT">
+        <div class="mb-3 form-group">
+            <label for="name" class="form-label">Tên khu vực </label>
+            <input type="text" class="form-control" value="{{sensor.name}}" id="name" placeholder="" name="name">
+        </div>
+        <div class="mb-3 form-group">
+            <label for="description" class="form-label">Mô tả</label>
+            <textarea  class="form-control" id="description" name="description">{{sensor.description}}</textarea>
+        </div>
+        <div class="mb-3 form-group">
+            <label for="topic" class="form-label">Topic</label>
+            <input type="text" class="form-control" value="{{sensor.topic}}" id="topic" name="topic">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+    </form>
+</div>

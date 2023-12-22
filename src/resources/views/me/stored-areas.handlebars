@@ -1,0 +1,81 @@
+<div class="mt-4">
+    <h3>Khu vực</h3>
+    
+        <table class="table mt-4">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Tên khu vực</th>
+        <th scope="col">Mô tả</th>
+        <th scope="col">Topic</th>
+        <th scope="col">Thời gian tạo</th>
+        <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each sensors}}
+        <tr>
+            <th scope="row">{{sum @index 1}}</th>
+            <td>{{this.name}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.topic}}</td>
+            <td>{{this.updatedAt}}</td>
+            <td>
+                <a class="btn btn-primary" href="/area/{{this._id}}/edit" role="button">Sửa</a>
+                <a class="btn btn-danger" data-bs-toggle="modal" data-id="{{this._id}}" data-bs-target="#delete-area-modal" href="" role="button">Xóa</a>                
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+    </table>
+</div>
+
+
+{{!-- Confirm delete --}}
+<div id="delete-area-modal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa khu vực</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn chắc chắn muốn xóa khu vực này ?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button id="btn-delete-area" type="button" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Delete hidden form --}}
+<form method="POST" name="delete-area-form"></form>
+
+
+<script>
+  //document.addEventListener('DOMContentLoaded',function(){
+      var areaId
+      var deleteForm = document.forms['delete-area-form']
+
+      var deleteModal = document.getElementById('delete-area-modal')
+      deleteModal.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      // Extract info from data-bs-* attributes
+      areaId = button.getAttribute('data-id')
+
+      console.log(areaId)
+      });
+
+      var btnDeleteArea = document.getElementById('btn-delete-area');
+      console.log(btnDeleteArea);
+
+      btnDeleteArea.onclick = function (){
+        deleteForm.action = '/area/' + areaId + '?_method=DELETE';
+        deleteForm.submit();
+      }
+
+//});
+</script>

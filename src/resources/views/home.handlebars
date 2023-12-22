@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+    <h1>HOME PAGE</h1>
+
+<div class="container h-50" >
+  <div class="container py-1 h-50">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="">
+
+        <div class="card shadow-0 border border-dark border-5 text-dark h-50" style="border-radius: 10px;">
+          <div class="card-body p-1">
+
+            <div class="row text-center">
+              <div class="col-sm-9 text-center border-end border-5 border-dark py-4"
+                style="margin-top: -1.5rem; margin-bottom: -1.5rem;">
+                <div class="d-flex justify-content-around mt-1">
+                  <p class="" id="city">...</p>
+                  <p class=""id="current-date">...</p>
+                  
+                </div>
+                
+                <div class="d-flex justify-content-around align-items-center py-2 my-2">
+                  <div class="text-start">
+                    <p class="fw mb-0" style="font-size: 0.9rem;" >Nhiệt độ:</p>
+                    <p class="fw-bold mb-0" style="font-size: 3.7rem;" id="current-temp">...</p>
+                  </div>
+                  <div class="text-start">
+                      <p class="fw mb-0" style="font-size: 0.9rem;" >Độ ẩm:</p>
+                     <p class="fw-bold mb-0" style="font-size: 3.7rem;" id="current-humi">...</p>
+                  </div>
+                  
+                  <div class="text-start">
+                    <p class="small" id="current-time">...</p>
+                    <p class="h3 mb-3" id="day">...</p>
+                    <p class="small mb-0">Cloudy</p>
+                  </div>
+                  <div class="text-start"><span class="material-symbols-outlined" style="font-size: 70px;">rainy</span></div>
+                </div>
+                <div class="d-flex justify-content-evenly align-items-center mb-5" id="next4days">
+                 
+                  <div class="d-flex flex-column justify-content-evenly ">
+                    <p class="fw mb-0" style="font-size: 0.9rem;" >RealFeel®</p>
+                    <strong class="fw mb-0" style="font-size: 0.9rem;" id="real-temp">...</strong>
+
+                   
+                  </div>
+                  <div class="d-flex flex-column justify-content-evenly ">
+                    <p class="fw mb-0" style="font-size: 0.9rem;" >Chất lượng không khí</p>
+                    <p class="fw mb-0" style="font-size: 0.9rem;" id="">...</p>
+                  </div>
+                  <div class="d-flex flex-column justify-content-evenly">                    
+                    <p class="fw mb-0" style="font-size: 0.9rem;" >Tốc độ gió</p>
+                    <strong class="fw mb-0" style="font-size: 0.9rem;" id="windSpeed">...</strong>
+                  </div>
+
+
+                  {{!-- border border-dark border-2 --}}
+                  {{!-- <div class="flex-column" style="border-radius: 10px; padding: .75rem">
+                    <p class="small mb-1">Sun</p>
+                    <p class="small mb-0"><strong id="sun"></strong></p>
+                  </div>
+                  <div class="flex-column">
+                    <p class="small mb-1">Mon</p>
+                    <p class="small mb-0"><strong id="mon"></strong></p>
+                  </div>
+                  <div class="flex-column">
+                    <p class="small mb-1">Tue</p>
+                    <p class="small mb-0"><strong id="tue"></strong></p>
+                  </div>
+                  <div class="flex-column">
+                    <p class="small mb-1">Wed</p>
+                    <p class="small mb-0"><strong id="wed"></strong></p>
+                  </div>
+                  <div class="flex-column">
+                    <p class="small mb-1">Thu</p>
+                    <p class="small mb-0"><strong id="thu"></strong></p>
+                  </div>
+                  <div class="flex-column">
+                    <p class="small mb-1">Fri</p>
+                    <p class="small mb-0"><strong id="fri"></strong></p>
+                  </div>
+                  <div class="flex-column">
+                    <p class="small mb-1">Sat</p>
+                    <p class="small mb-0"><strong id="sat"></strong></p>
+                  </div>
+                  <div class="flex-column">
+                    <i class="fas fa-minus"></i>
+                  </div> --}}
+                </div>
+              </div>
+              <div class="col-sm-3 ">
+                <p class="small mt-1 mb-1 center" >Theo giờ</p>
+                <p class="pb-1"><span class="pe-2" id="time-1"></span> <strong id="tempNext-1"></strong></p>
+                <p class="pb-1"><span class="pe-2" id="time-2"></span> <strong id="tempNext-2"></strong></p>
+                <p class="pb-1"><span class="pe-2" id="time-3"></span> <strong id="tempNext-3"></strong></p>
+                <p class="pb-1"><span class="pe-2" id="time-4"></span> <strong id="tempNext-4"></strong></p>
+                <p class="pb-1"><span class="pe-2" id="time-5"></span> <strong id="tempNext-5"></strong></p>
+                <div class="pb-1"><span class="pe-2" id="time-6"></span> <strong id="tempNext-6"></strong></div>
+                {{!-- <p><span class="pe-2">17:00</span> <strong>-3°</strong></p> --}}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class ="mt-4">
+        <div class="row">
+            {{#each sensor}}
+            <div class="col-sm-6 col-lg-3">
+                <div class="card card-sensor-item" >
+                    {{!-- <a href="/area/{{this.slug}}">
+                        <img src="{{this.image}}" class="card-img-top" alt="{{this.name}}"> 
+                    </a> --}}
+                    <div class="card-body">
+                        <a href="/area/{{this.slug}}">
+                            <h5 class="card-title">{{this.name}}</h5>
+                        </a>
+                      <p class="card-text">{{this.description}}</p>
+                      <p class="card-text" >Topic: {{this.topic}}</p>
+                      <h5>Nhiệt độ:<span id="temp-{{this.topic}}"></span></h5>
+                      <h5>Độ ẩm:<span id="humi-{{this.topic}}"></span></h5>
+                      <h5>Độ ẩm đất:<span id="soil-{{this.topic}}"></span></h5>
+                      <a href="/area/{{this.slug}}" class="btn btn-success">Chi tiết</a>
+                    </div>
+                  </div>
+            </div>
+          
+            
+           {{/each}}
+           
+        </div>
+    </div>
+    <script>
+        const socket = io();
+         {{#each sensor}}
+            socket.on("{{this.topic}}temp", function(data_received){
+                let giatri_temp = data_received
+                document.getElementById("temp-{{this.topic}}").innerHTML = giatri_temp + " °C";
+            })
+
+            socket.on("{{this.topic}}humi", function(data_received){
+                let giatri_humi = data_received
+                document.getElementById("humi-{{this.topic}}").innerHTML = giatri_humi + " %";
+            })
+
+            socket.on("{{this.topic}}soil", function(data_received){
+                let giatri_soil = data_received
+                document.getElementById("soil-{{this.topic}}").innerHTML = giatri_soil + " %";
+            })
+            
+            //document.getElementById("humi-{{this.topic}}").innerHTML = giatri_humi + " %";
+            //document.getElementById("soil-{{this.topic}}").innerHTML = giatri_soil + " %";
+         {{/each}}
+
+
+         //API OpenWeatherMap
+        const api_key = 'c06cbbb8c672c156e7cc7b854914e29a';
+        const city = 'Hanoi';
+        const latitude = 21.0245;
+        const longitude = 105.8412;
+        const time = new Date();
+        const current = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}`;
+        const hourly = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${api_key}`;
+        const dayly = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=7&appid=${api_key}`;
+        
+        fetch(current)
+          .then(response => response.json())
+          .then(data => {
+            if (data.cod === 200) {
+              console.log(data)
+              const temperature = (data.main.temp - 273.15);
+              const humidity = data.main.humidity;
+              const realfeel = (data.main.feels_like- 273.15).toFixed();
+              const windspeed = data.wind.speed;
+              document.getElementById('current-temp').textContent = temperature + "°C";
+              document.getElementById('current-humi').textContent = humidity + "%";
+              document.getElementById('real-temp').textContent = realfeel + "°C"
+              document.getElementById('windSpeed').textContent = realfeel + "m/s"
+
+            } else {
+            console.error('Không thể lấy dữ liệu thời tiết hiện tại');
+            }
+          })
+          .catch((err) => console.log('Lỗi khi kết nối đến API:', err))
+
+        fetch(hourly)
+          .then(response => response.json())
+          .then(data => {
+            
+              console.log(data)
+              document.getElementById('city').textContent = data.city.name;
+
+              const nextSixHoursTemperature = data.list.slice(1, 7).map(entry => (entry.main.temp - 273.15).toFixed());
+              const nextSixHoursTime = data.list.slice(1, 7).map(entry => (moment(entry.dt_txt).format('h:mm a'))); 
+
+              console.log(nextSixHoursTemperature)
+              console.log(nextSixHoursTime)
+              
+              nextSixHoursTemperature.forEach((temperature, index) => {
+                const spanId = "tempNext-" + (index + 1);
+                const timeId = "time-" + (index + 1);
+                const spanElement = document.getElementById(spanId)
+                const timeElement = document.getElementById(timeId)
+
+                timeElement.textContent = nextSixHoursTime[index]
+                spanElement.textContent = temperature + '°C'
+              })
+
+          })
+          .catch((err) => console.log('Lỗi khi kết nối đến API:', err))
+
+        
+
+
+
+        document.getElementById('current-time').textContent =  moment().format('HH:mm a')
+        document.getElementById('day').textContent =  moment().format('dddd')
+        document.getElementById('current-date').textContent =  moment(time).format('DD.MM.YYYY')
+
+        
+      
+    </script>
+    <script src="index.js"></script>
+
+</body>
+</html>

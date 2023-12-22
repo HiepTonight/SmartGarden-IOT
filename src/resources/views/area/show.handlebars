@@ -1,0 +1,269 @@
+<link rel="stylesheet" href="/css/show.css">
+<div class="mt-4">
+    <div class="row">
+        <div class = "col-lg-3">
+            <h4>Thiết bị</h4>
+            <div class="form-check form-switch mt-4">
+              <form action="/area/control/{{sensor._id}}?_method=PUT" method="POST">  
+              <input type="hidden" name="field" value="light">
+              <input class="form-check-input" type="checkbox" id="light-{{sensor.topic}}" name="value" value="true" onclick="light_{{sensor.topic}}(), this.form.submit()" {{#if sensor.light}}checked{{/if}}>
+              <label class="form-check-label" for="light-{{sensor.topic}}">Hệ thống đèn</label>
+              </form>
+            </div>
+            <div class="form-check form-switch mt-4">
+              <form action="/area/control/{{sensor._id}}?_method=PUT" method="POST">  
+              <input type="hidden" name="field" value="heatLamp">
+              <input class="form-check-input" type="checkbox" id="heatLamp-{{sensor.topic}}" name="value" value="true" onclick="heatLamp_{{sensor.topic}}(), this.form.submit() " {{#if sensor.heatLamp}}checked{{/if}}>
+              <label class="form-check-label" for="heatLamp-">Đèn sưởi</label>
+              </form>
+            </div>
+            <div class="form-check form-switch mt-4">
+              <form action="/area/control/{{sensor._id}}?_method=PUT" method="POST">  
+              <input type="hidden" name="field" value="waterValve">
+              <input class="form-check-input" type="checkbox" id="waterValve-{{sensor.topic}}" name="value" value="true" onclick="waterValve_{{sensor.topic}}(), this.form.submit()" {{#if sensor.waterValve}}checked{{/if}}>
+              <label class="form-check-label" for="waterValve-{{sensor.topic}}">Hệ thống van nước</label>
+              </form>
+            </div>
+            <div class="form-check form-switch mt-4">
+              <form action="/area/control/{{sensor._id}}?_method=PUT" method="POST">  
+              <input type="hidden" name="field" value="auto">
+              <input class="form-check-input" type="checkbox" id="auto-{{sensor.topic}}" name="value" value="true" {{#if sensor.auto}}checked{{/if}}>
+              <label class="form-check-label" for="auto-{{sensor.topic}}">Tự động</label>
+              </form>
+            </div>
+
+            <div class="card mt-4">
+              Cảnh báo:
+            </div>
+            <div class="card mt-4">
+              Tank nước
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="container">
+            <h2>{{sensor.name}}</h2>
+            <h5 >{{sensor.description}}</h5>
+            <div id="bar-chart" >
+                <canvas id="Chart"></canvas>
+            </div>
+            <div class="row mt-4">
+                <div class="col btn btn-success">
+                Nhiệt độ:
+                <span id="temp-{{sensor.topic}}"></span>
+                </div>
+                <div class="col btn btn-success">
+                Độ ẩm môi trường:
+                <span id="humi-{{sensor.topic}}"></span>
+                </div>
+                <div class="col btn btn-success">
+                Độ ẩm đất:
+                <span id="soil-{{sensor.topic}}"></span>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  async function fetchData() {
+    const url = '/area/data/{{sensor.slug}}';
+    const response = await fetch(url);
+
+    const dataPoints = await response.json();
+    console.log(dataPoints);
+    return dataPoints;
+  }
+
+  fetchData().then(dataPoints => {
+    const timeMark = dataPoints.temp.map(function(index){
+      return index.timestamp
+    })
+
+    const temp = dataPoints.temp.map(function(index){
+      return index.value
+    })
+
+    const humi = dataPoints.humi.map(function(index){
+      return index.value
+    })
+
+    const soil = dataPoints.soil.map(function(index){
+      return index.value
+    })
+
+    const formattedTimes = timeMark.map(timeMark => moment(timeMark).format('YYYY-MM-DD HH:mm'));
+
+    console.log(temp)
+    update_chart.data.datasets[0].data = temp
+    update_chart.data.datasets[1].data = humi
+    update_chart.data.datasets[2].data = soil
+    update_chart.data.labels = formattedTimes
+    update_chart.update()
+  } )
+
+    //chart
+    const update_chart = new Chart("Chart", {
+    type: "line",
+    data: {
+      labels: [],
+      datasets: [{
+          label: "Nhiệt độ trung bình",
+          lineTension: 0,
+          backgroundColor: "red",      
+          borderColor: "red", 
+          tension: 1  ,      
+          data: []},
+          {
+          label:"Độ ẩm môi trường trung bình",
+          lineTension:0,
+          backgroundColor:"blue",      
+          borderColor:"blue",         
+          data:[]
+          },
+          {
+          label:"Độ ẩm đất trung bình",
+          lineTension:0,
+          backgroundColor:"green",      
+          borderColor:"green",         
+          data:[]
+          }
+        ]
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      scales: {
+        x: {
+          title:{
+              display: true,
+              text: "Thời gian",
+          }
+        },
+        y: {
+          title:{
+              display: true,
+              text: "Giá trị",
+          }
+        },
+      }
+    }
+  })
+
+
+  //Update du lieu len board va chart
+  const socket = io();
+
+  socket.on("{{sensor.topic}}temp", function(data_received){
+      let giatri_temp = data_received
+      document.getElementById("temp-{{sensor.topic}}").innerHTML = giatri_temp + " °C";
+
+      update_chart.data.datasets[0].data.push(giatri_temp);
+      const maxDataPoints = 100;
+      if (update_chart.data.datasets[0].data.length > maxDataPoints) {
+        update_chart.data.datasets[0].data.shift();
+      }
+
+      const formattedTime = moment().format('YYYY-MM-DD HH:mm');
+      update_chart.data.labels.push(formattedTime);
+      if (update_chart.data.labels.length > maxDataPoints) {
+        update_chart.data.labels.shift();
+      }
+
+      update_chart.update();
+  })
+
+  socket.on("{{sensor.topic}}humi", function(data_received){
+      let giatri_humi = data_received
+      document.getElementById("humi-{{sensor.topic}}").innerHTML = giatri_humi + " %";  
+
+      update_chart.data.datasets[1].data.push(giatri_humi);
+      const maxDataPoints = 100;
+      if (update_chart.data.datasets[1].data.length > maxDataPoints) {
+        update_chart.data.datasets[1].data.shift();
+      }
+
+    
+
+      update_chart.update();
+      
+  })
+
+  socket.on("{{sensor.topic}}soil", function(data_received){
+      let giatri_soil = data_received
+      document.getElementById("soil-{{sensor.topic}}").innerHTML = giatri_soil + " %";
+
+      
+      update_chart.data.datasets[2].data.push(giatri_soil);
+      const maxDataPoints = 100;
+      if (update_chart.data.datasets[2].data.length > maxDataPoints) {
+        update_chart.data.datasets[2].data.shift();
+      }
+
+    
+
+      update_chart.update();
+
+  })
+
+
+
+  //Dieu khien thiet bi tai khu vuc chi dinh
+  function light_{{sensor.topic}}(){
+    var checkbox = document.getElementById('light-{{sensor.topic}}')
+     if (checkbox.checked) {
+    var result = confirm("Bạn có muồn bật đèn sưởi không ?")
+    if(result){
+      
+      socket.emit("light-{{sensor.topic}}","0");
+    }
+    else{
+      checkbox==false
+    }
+    } else {
+        
+        socket.emit("light-{{sensor.topic}}","1");
+    }
+    }
+
+
+  function heatLamp_{{sensor.topic}}(){
+    var checkbox = document.getElementById('heatLamp-{{sensor.topic}}')
+     if (checkbox.checked) {
+    var result = confirm("Bạn có muồn bật đèn sưởi không ?")
+    if(result){
+      
+      socket.emit("heatLamp-{{sensor.topic}}","0");
+    }
+    else{
+      checkbox==false
+    }
+    } else {
+        
+        socket.emit("heatLamp-{{sensor.topic}}","1");
+    }
+    }
+
+
+  function waterValve_{{sensor.topic}}(){
+    var checkbox = document.getElementById('waterValve-{{sensor.topic}}')
+     if (checkbox.checked) {
+    var result = confirm("Bạn có muồn bật đèn sưởi không ?")
+    if(result){
+      
+      socket.emit("waterValve-{{sensor.topic}}","0");
+    }
+    else{
+      checkbox==false
+    }
+    } else {
+        
+        socket.emit("waterValve-{{sensor.topic}}","1");
+    }
+    }
+
+</script>

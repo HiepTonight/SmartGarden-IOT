@@ -1,0 +1,94 @@
+<script>
+    app.post('/update', function(req, res) {
+        var topic = req.body.topic;
+        var field = req.body.field;
+        var value = req.body.value == 'on'; // Giá trị sẽ là true nếu checkbox được chọn, và false nếu checkbox được bỏ chọn
+    
+        var update = {};
+        update[field] = value;
+    
+        Sensor.updateOne({ topic: topic }, { $set: update }, function(err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.redirect('back');
+            }
+        });
+    });
+
+
+
+    
+    fetch('/area/data/{{sensor.slug}}')
+      .then(
+        function(response) {
+      if (response.status !== 200) {
+        console.log('Lỗi, mã lỗi ' + response.status);
+        return;
+      }
+      // parse response data
+      response.json().then(data => {
+        console.log(data);
+      })
+    }
+      )
+    .catch(err => {
+    console.log('Error :-S', err)
+  });
+
+
+    const update_chart = new Chart("Chart", {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+              label: "Nhiệt độ trung bình",
+              lineTension: 0,
+              backgroundColor: "red",      
+              borderColor: "red",         
+              data: []},
+              {
+              label:"Độ ẩm môi trường trung bình",
+              lineTension:0,
+              backgroundColor:"blue",      
+              borderColor:"blue",         
+              data:[]
+              },
+              {
+              label:"Độ ẩm đất trung bình",
+              lineTension:0,
+              backgroundColor:"green",      
+              borderColor:"green",         
+              data:[]
+              }
+            ]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          scales: {
+            x: {
+              title:{
+                  display: true,
+                  text: "Thời gian",
+              }
+            },
+            y: {
+              title:{
+                  display: true,
+                  text: "Giá trị",
+              }
+            },
+          }
+        }
+      })
+</script>
+<form action="/area/control" method="POST">
+    <input type="hidden" name="topic" value="{{sensor.topic}}">
+    <input type="hidden" name="field" value="light">
+    <input class="form-check-input" type="checkbox" id="light-{{sensor.topic}}" onclick="this.form.submit()" {{#if sensor.light}}checked{{/if}}>
+    <label class="form-check-label" for="light-{{sensor.topic}}">Hệ thống đèn</label>
+</form>

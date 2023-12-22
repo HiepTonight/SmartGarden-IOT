@@ -1,0 +1,20 @@
+<div class="mt-4">
+    <h3>Thêm khu vực mới</h3>
+
+    <form method="POST" action="/area/store">
+        <div class="mb-3 form-group">
+            <label for="name" class="form-label">Tên khu vực</label>
+            <input type="text" class="form-control" id="name" placeholder="" name="name">
+        </div>
+        <div class="mb-3 form-group">
+            <label for="description" class="form-label">Mô tả</label>
+            <input type="text" class="form-control" id="description" name="description">
+        </div>
+        <div class="mb-3 form-group">
+            <label for="topic" class="form-label">Topic</label>
+            <input type="text" class="form-control" id="topic" name="topic">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Thêm mới</button>
+    </form>
+</div>
