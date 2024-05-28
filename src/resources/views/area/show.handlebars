@@ -1,7 +1,9 @@
 <link rel="stylesheet" href="/css/show.css">
+
 <div class="mt-4">
-    <div class="row">
-        <div class = "col-lg-3">
+    <div class="row ">
+        <div class = "col-lg-3 ">
+          <div class="box">
             <h4>Thiết bị</h4>
             <div class="form-check form-switch mt-4">
               <form action="/area/control/{{sensor._id}}?_method=PUT" method="POST">  
@@ -27,7 +29,7 @@
             <div class="form-check form-switch mt-4">
               <form action="/area/control/{{sensor._id}}?_method=PUT" method="POST">  
               <input type="hidden" name="field" value="auto">
-              <input class="form-check-input" type="checkbox" id="auto-{{sensor.topic}}" name="value" value="true" {{#if sensor.auto}}checked{{/if}}>
+              <input class="form-check-input" type="checkbox" id="auto-{{sensor.topic}}" name="value" value="true" onclick="this.form.submit()" {{#if sensor.auto}}checked{{/if}}>
               <label class="form-check-label" for="auto-{{sensor.topic}}">Tự động</label>
               </form>
             </div>
@@ -38,16 +40,38 @@
             <div class="card mt-4">
               Tank nước
             </div>
+            </div>
         </div>
 
-        <div class="col-lg-9">
+        <div class="col-lg-9 box">
+          <div class="box">
             <div class="container">
             <h2>{{sensor.name}}</h2>
             <h5 >{{sensor.description}}</h5>
             <div id="bar-chart" >
+              <div class="container">
                 <canvas id="Chart"></canvas>
+              </div>
             </div>
-            <div class="row mt-4">
+            <div style="display: flex; justify-content: space-around; align-items: center;">
+              <div class="badge bg-danger text-wrap" style="display: flex; gap: 5px; height: 2.5rem; width: 12rem; align-items: center; ">
+                          <span class="material-icons">thermostat</span>
+                          Nhiệt độ: <span id="temp-{{sensor.topic}}"></span>
+              </div>
+              <div class="badge bg-primary text-wrap" style="display: flex; gap: 5px; height: 2.5rem; width: 12rem; align-items: center;">
+                          <span class="material-icons">water_drop</span>
+                          Độ ẩm đất: <span id="humi-{{sensor.topic}}"></span>
+                        </div>
+                        <div class="badge bg-success text-wrap" style="display: flex; gap: 5px; height: 2.5rem; width: 12rem; align-items: center;">
+                          <span class="material-icons">grass</span>
+                          Độ ẩm đất: <span id="soil-{{sensor.topic}}"></span>
+                        </div>
+                        <div class="badge bg-warning text-wrap" style="display: flex; gap: 5px; height: 2.5rem; width: 12rem; align-items: center;">
+                          <span class="material-icons">light_mode</span>
+                          Ánh sáng: <span id="soil-{{sensor.topic}}"></span>
+                        </div>
+            </div>
+            {{!-- <div class="row mt-4">
                 <div class="col btn btn-success">
                 Nhiệt độ:
                 <span id="temp-{{sensor.topic}}"></span>
@@ -60,6 +84,7 @@
                 Độ ẩm đất:
                 <span id="soil-{{sensor.topic}}"></span>
                 </div>
+            </div> --}}
             </div>
             </div>
         </div>
@@ -159,7 +184,7 @@
   const socket = io();
 
   socket.on("{{sensor.topic}}temp", function(data_received){
-      let giatri_temp = data_received
+      let giatri_temp = data_received.toFixed(2)
       document.getElementById("temp-{{sensor.topic}}").innerHTML = giatri_temp + " °C";
 
       update_chart.data.datasets[0].data.push(giatri_temp);

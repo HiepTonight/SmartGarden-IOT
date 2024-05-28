@@ -6,6 +6,7 @@ const { mutipleMongooseToObject } = require('../../util/mongoose');
 const mqttTopics = {};
 const sensorId = {};
 const CollectionName = {};
+const auto = false
 
 
 //Config
@@ -119,6 +120,7 @@ function handleData(client) {
     io.emit(temp,temp_data)
     io.emit(humi,humi_data)
     io.emit(soil,soil_data)
+
   })
 }
 
@@ -201,6 +203,9 @@ async function monitorListingsUsingEventEmitter(connection, timeInMs = 60000, pi
           const topic = document.topic;
           const documentId = data.fullDocument._id;
 
+          //Them io listen moi
+          newIoListener(topic);
+
           mqttTopics[documentId] = topic;
 
           sensorId[topic] = documentId.toString();
@@ -232,9 +237,11 @@ async function monitorListingsUsingEventEmitter(connection, timeInMs = 60000, pi
 
       else if (data.operationType === 'update' || data.operationType === 'replace') {
           // console.log(data)
+          const auto = false
           const documentId = data.documentKey._id;
           const topic = data.updateDescription.updatedFields.topic;
           const preTopic = mqttTopics[documentId]
+
 
           if(typeof topic === 'undefined'){
             //Khong lam gi ca
@@ -252,8 +259,7 @@ async function monitorListingsUsingEventEmitter(connection, timeInMs = 60000, pi
             console.log("Hash map moi " + mqttTopics[documentId])
           }
           
-          const auto = data.updateDescription.updatedFields.auto;
-          if (auto === "on"){}
+        
       }
       
   })
@@ -275,6 +281,10 @@ async function docDataCheck(data){
   }
 }
 
+function autoCheck(){
+  if(auto == true ){}
+}
+
 function closeChangeStream(timeInMs = 60000, changeStream) {
   return new Promise((resolve) => {
       setTimeout(() => {
@@ -284,8 +294,53 @@ function closeChangeStream(timeInMs = 60000, changeStream) {
   })
 };
 
-function newIolisten(){
 
+
+function newIoListener(topic){
+  const x = String(topic)
+      const light = "light-"+x;
+      const heatLamp = "heatLamp-"+x;
+      const waterValve = "waterValve-"+x;
+      // console.log(light)
+      io.on("connection",function(socket){
+        socket.on(light, function(state){
+          
+          if(state=="0"){
+            client.publish(light,"0")
+            console.log("Pub data vao topic "+light+" data: "+ state)
+           
+          }else{
+            client.publish(light,"1")
+            console.log("Pub data vao topic "+light+" data: "+ state)
+        }
+        })
+      });
+      io.on("connection",function(socket){
+        socket.on(heatLamp, function(state){
+          
+          if(state=="0"){
+            client.publish(heatLamp,"0")
+            console.log("Pub data vao topic "+heatLamp+" data: "+ state)
+           
+          }else{
+            client.publish(heatLamp,"1")  
+            console.log("Pub data vao topic "+heatLamp+" data: "+ state)
+        }
+        })
+      });
+      io.on("connection",function(socket){
+        socket.on(waterValve, function(state){
+          
+          if(state=="0"){
+            client.publish(waterValve,"0")
+            console.log("Pub data vao topic "+waterValve+" data: "+ state)
+           
+          }else{
+            client.publish(waterValve,"1")
+            console.log("Pub data vao topic "+waterValve+" data: "+ state)
+        }
+        })
+      });
 }
 
 module.exports = { mqttConnect };
